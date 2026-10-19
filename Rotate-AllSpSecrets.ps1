@@ -26,6 +26,7 @@ foreach ($vault in $vaults) {
     $items = az keyvault secret list --vault-name $vault --query "[?tags.$TagName!=null].{name:name, appId:tags.$TagName}" -o json 2>$null
     if ($LASTEXITCODE -ne 0) {
         Write-Warning "Skipping vault $vault (cannot list secrets)"
+        $global:LASTEXITCODE = 0
         continue
     }
     foreach ($item in ($items | ConvertFrom-Json)) {
@@ -43,3 +44,4 @@ foreach ($vault in $vaults) {
 
 Write-Host "Processed $count secret(s); $($failures.Count) failed."
 if ($failures.Count) { exit 1 }
+exit 0
