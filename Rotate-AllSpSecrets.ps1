@@ -23,9 +23,10 @@ $failures = @()
 $count = 0
 
 foreach ($vault in $vaults) {
-    $items = az keyvault secret list --vault-name $vault --query "[?tags.$TagName!=null].{name:name, appId:tags.$TagName}" -o json 2>$null
+    $items = az keyvault secret list --vault-name $vault --query "[?tags.$TagName!=null].{name:name, appId:tags.$TagName}" -o json 2>&1
     if ($LASTEXITCODE -ne 0) {
-        Write-Warning "Skipping vault $vault (cannot list secrets)"
+        Write-Warning "Skipping vault $vault (cannot list secrets): $($items | Out-String)"
+        $failures += "$vault (list failed)"
         continue
     }
     foreach ($item in ($items | ConvertFrom-Json)) {
