@@ -1,4 +1,4 @@
-az role assignment create --assignee <AZURE_CLIENT_ID> --role "Key Vault Secrets Officer" --scope $(az keyvault show -n sp-rotate --query id -o tsv)#Requires -Version 7
+#Requires -Version 7
 <#
 Rotates the client secret of every service principal referenced by a Key Vault secret in a subscription.
 Discovery: a Key Vault secret is in scope when it has the tag `appId=<app registration client id>`.
@@ -25,7 +25,7 @@ $count = 0
 foreach ($vault in $vaults) {
     $items = az keyvault secret list --vault-name $vault --query "[?tags.$TagName!=null].{name:name, appId:tags.$TagName}" -o json 2>&1
     if ($LASTEXITCODE -ne 0) {
-        Write-Warning "Skipping vault $vault (cannot list secrets): $($items | Out-String)"
+        Write-Warning "Skipping vault $vault (cannot list secrets): $($items -join [Environment]::NewLine)"
         $failures += "$vault (list failed)"
         continue
     }
@@ -44,3 +44,4 @@ foreach ($vault in $vaults) {
 
 Write-Host "Processed $count secret(s); $($failures.Count) failed."
 if ($failures.Count) { exit 1 }
+exit 0
