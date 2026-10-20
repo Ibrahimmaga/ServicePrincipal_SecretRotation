@@ -1,4 +1,4 @@
-#Requires -Version 7
+az role assignment create --assignee <AZURE_CLIENT_ID> --role "Key Vault Secrets Officer" --scope $(az keyvault show -n sp-rotate --query id -o tsv)#Requires -Version 7
 <#
 Rotates the client secret of every service principal referenced by a Key Vault secret in a subscription.
 Discovery: a Key Vault secret is in scope when it has the tag `appId=<app registration client id>`.

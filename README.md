@@ -1,3 +1,4 @@
+
 # ServicePrincipal_SecretRotation
 
 Rotates the client secrets of all tagged service principals (app registrations) in a subscription and updates the matching Key Vault secrets. Runs monthly through GitHub Actions.
